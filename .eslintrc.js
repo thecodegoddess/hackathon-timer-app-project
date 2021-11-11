@@ -107,6 +107,7 @@ module.exports = {
       'error',
       { maximum: 1 },
     ],
+    'react/jsx-no-bind': 0,
     'react/jsx-one-expression-per-line': 0,
     'react/jsx-props-no-multi-spaces': 0,
     'react/jsx-props-no-spreading': 0,
