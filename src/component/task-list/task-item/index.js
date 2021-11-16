@@ -1,3 +1,4 @@
+import TaskIcon from 'component/task-icon';
 import * as React from 'react';
 import {
   deleteTaskAction,
@@ -7,7 +8,9 @@ import {
   // updateTimerStatus,
   useTimerItems,
 } from 'component/timer-provider';
-import {Timer} from 'utils';
+import {
+  Timer, convertMilliseconds,
+} from 'utils';
 import Debugger from 'component/debugger';
 import './style/task-item.css';
 
@@ -17,18 +20,19 @@ const {
 
 function TaskItem(props) {
   const {
-    text, status, timer, id,
+    text, status, timer, id, priority,
   } = props;
 
   const {dispatch} = useTimerItems();
 
+  const {formatted} = convertMilliseconds(timer);
   const [
     timeRemainingState,
     setTimeRemainingState,
-  ] = useState('Not Started');
+  ] = useState(formatted);
 
   const taskTimer = useRef(new Timer({
-    lengthInMs: 100000,
+    lengthInMs: timer,
     onStop: () => {
       dispatch(updateTimerStatus(id, STATUS_ENUM.DONE));
     },
@@ -69,14 +73,10 @@ function TaskItem(props) {
   return (
     <li className={ `task-item ${getCSSModifierClass()}` }>
       <div className="task-item__task-name">
+        <span>{Array.prototype.fill(priority).map(() => '❗️')}</span>
         <strong>{text}</strong> Timer: <em>{timeRemainingState}</em>
-
-        <Debugger { ...{
-          text,
-          status,
-          timer,
-        } }
-        />
+        <TaskIcon status={ status } />
+        <Debugger { ...props } />
       </div>
 
       <div className="task-item__button-group">

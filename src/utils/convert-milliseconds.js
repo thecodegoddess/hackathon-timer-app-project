@@ -12,10 +12,6 @@ const convertMilliseconds = (
   const hours = totalHours % 24;
 
   function stringValue(value) {
-    if (value < 1) {
-      return '';
-    }
-
     return (value < 10) ? `0${value}` : `${value}`;
   }
 
@@ -25,7 +21,6 @@ const convertMilliseconds = (
     stringValue(minutes),
     stringValue(seconds),
   ]
-    .filter((vals) => vals)
     .join(':');
   switch (format) {
   case 's':

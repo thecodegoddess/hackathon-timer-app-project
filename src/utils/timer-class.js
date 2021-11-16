@@ -30,9 +30,14 @@ class Timer {
 
       const timeRemainingObject = convertMilliseconds(msRemaining);
 
-      const {formatted} = timeRemainingObject;
+      const {
+        m, s,
+      } = timeRemainingObject;
 
-      this.formattedTimeRemaining = formatted;
+      this.formattedTimeRemaining = [
+        m < 10 ? `0${m}` : m,
+        s < 10 ? `0${s}` : s,
+      ].join(':');
 
       this.onTick({
         msRemaining,
@@ -54,11 +59,16 @@ class Timer {
     this.nextTick = Date.now();
     this.stopTime = this.nextTick + this.length;
 
-    const {formatted} = convertMilliseconds(this.length);
+    const {
+      m, s,
+    } = convertMilliseconds(this.length);
 
     this.isRunning = true;
 
-    this.formattedTimeRemaining = formatted;
+    this.formattedTimeRemaining = [
+      m < 10 ? `0${m}` : m,
+      s < 10 ? `0${s}` : s,
+    ].join(':');
 
     this.nextAnimationFrame();
   }

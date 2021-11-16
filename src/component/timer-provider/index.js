@@ -13,33 +13,34 @@ const STATUS_ENUM = {
   NOT_STARTED: 'NOT_STARTED',
 };
 
-const initalStateForDebug = {
-  _yx89jjqpy: {
+const PRIORITY = {
+  NONE: 0,
+  LOW: 1,
+  MEDIUM: 2,
+  HIGH: 4,
+};
+
+const initialStateForDebug = {
+  _yx89jjqpy_LOW: {
     text: 'Study for Finals',
     status: 'NOT_STARTED',
-    timer: {
-      length: 2000,
-      status: 'NOT_STARTED',
-    },
+    timer: 2000,
+    priority: PRIORITY.LOW,
   },
-  _0uiit5u6r: {
+  _0uiit5u6r_MED: {
     text: 'Finish Essay Outline',
     status: 'NOT_STARTED',
-    timer: {
-      length: 2000,
-      status: 'NOT_STARTED',
-    },
+    timer: 100000,
+    priority: PRIORITY.MEDIUM,
   },
-  _rbs05g3g3: {
+  _rbs05g3g3_HIGH: {
     text: 'Pick up groceries ',
     status: 'NOT_STARTED',
-    timer: {
-      length: 2000,
-      status: 'NOT_STARTED',
-    },
+    timer: 150000,
+    priority: PRIORITY.HIGH,
   },
 };
-const DEFAULT_TIMER_LENGTH_MS = 1000 * 2;
+const DEFAULT_TIMER_LENGTH_MS = 1000 * (60 * 5);
 // const DEFAULT_TIMER_LENGTH_MS = 1500000; // 25 minutes
 
 const initialState = {};
@@ -71,13 +72,13 @@ export const editTaskAction = (key, text) => ({
   },
 });
 
-export const updateTaskStatus = (key, status) => ({
-  type: TIMER_ACTION_TYPES.UPDATE_STATUS,
-  payload: {
-    key,
-    status,
-  },
-});
+// export const updateTaskStatus = (key, status) => ({
+//   type: TIMER_ACTION_TYPES.UPDATE_STATUS,
+//   payload: {
+//     key,
+//     status,
+//   },
+// });
 
 export const updateTimerStatus = (key, status) => ({
   type: TIMER_ACTION_TYPES.UPDATE_STATUS,
@@ -96,10 +97,8 @@ function timerReducer(state = initialState, action) {
     const newItem = {[createID()]: {
       text: payload.text,
       status: STATUS_ENUM.NOT_STARTED,
-      timer: {
-        length: DEFAULT_TIMER_LENGTH_MS,
-        status: STATUS_ENUM.NOT_STARTED,
-      },
+      timer: DEFAULT_TIMER_LENGTH_MS,
+      priority: PRIORITY.NONE,
     }};
 
     return {
@@ -135,33 +134,33 @@ function timerReducer(state = initialState, action) {
       },
     };
   }
-  case TIMER_ACTION_TYPES.UPDATE_TIMER_STATUS: {
-    const {
-      key, status,
-    } = payload;
-
-    if (!STATUS_ENUM[status]) {
-      throw new Error(`Status Type ${status} is not a valid Task status`);
-    }
-    const taskToEditStatus = state[key];
-
-    if (!taskToEditStatus) {
-      throw new Error(`Invalid key provided: ${key}`);
-    }
-
-    const timerStatusTask = {
-      ...taskToEditStatus,
-      timer: {
-        ...taskToEditStatus.timer,
-        status,
-      },
-    };
-
-    return {
-      ...state,
-      ...timerStatusTask,
-    };
-  }
+  // case TIMER_ACTION_TYPES.UPDATE_TIMER_STATUS: {
+  //   const {
+  //     key, status,
+  //   } = payload;
+  //
+  //   if (!STATUS_ENUM[status]) {
+  //     throw new Error(`Status Type ${status} is not a valid Task status`);
+  //   }
+  //   const taskToEditStatus = state[key];
+  //
+  //   if (!taskToEditStatus) {
+  //     throw new Error(`Invalid key provided: ${key}`);
+  //   }
+  //
+  //   const timerStatusTask = {
+  //     ...taskToEditStatus,
+  //     timer: {
+  //       ...taskToEditStatus.timer,
+  //       status,
+  //     },
+  //   };
+  //
+  //   return {
+  //     ...state,
+  //     ...timerStatusTask,
+  //   };
+  // }
 
   case TIMER_ACTION_TYPES.EDIT: {
     const {
@@ -206,7 +205,7 @@ function TimerProvider({children}) {
   const [
     state,
     dispatch,
-  ] = useReducer(timerReducer, initalStateForDebug);
+  ] = useReducer(timerReducer, initialStateForDebug);
 
   const value = {
     state,
